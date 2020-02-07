@@ -1,9 +1,14 @@
 {
   "compilerOptions": {
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "jsx": "react",
     "allowJs": true,
     "module": "commonjs",
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "strictNullChecks": true,
+    "noImplicitThis": true,
     "noImplicitAny": true,
     "sourceMap": true,
     "baseUrl": ".",
@@ -12,9 +17,9 @@
     "resolveJsonModule": true,
     "paths": {
       "*": ["node_modules/*"]
-    }
+    },
+    "lib": ["ES6", "DOM", "ES2020", "ESNext.AsyncIterable"],
+    "target": "ES2020"
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*"]
 }
