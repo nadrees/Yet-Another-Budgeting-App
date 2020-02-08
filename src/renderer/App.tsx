@@ -3,7 +3,10 @@ import React, { ReactElement, useReducer } from "react";
 import BudgetSelector from "./BudgetSelector";
 import NewBudget from "./NewBudget";
 
-type View = "SelectBudget" | "NewBudget";
+type View =
+  | { name: "SelectBudget" }
+  | { name: "NewBudget" }
+  | { name: "LoadBudget"; path: string };
 
 type State = {
   view: View;
@@ -19,18 +22,28 @@ function reducer(state: State, action: Action): State {
 }
 
 export default function App(): NonNullable<ReactElement> {
-  const [state, dispatch] = useReducer(reducer, { view: "SelectBudget" });
+  const [state, dispatch] = useReducer(reducer, {
+    view: { name: "SelectBudget" }
+  });
 
-  switch (state.view) {
+  switch (state.view.name) {
     case "SelectBudget":
       return (
         <BudgetSelector
           onNewBudgetClicked={() =>
-            dispatch({ type: "SetView", view: "NewBudget" })
+            dispatch({ type: "SetView", view: { name: "NewBudget" } })
           }
         />
       );
     case "NewBudget":
-      return <NewBudget />;
+      return (
+        <NewBudget
+          onBudgetCreated={(path: string) =>
+            dispatch({ type: "SetView", view: { name: "LoadBudget", path } })
+          }
+        />
+      );
+    case "LoadBudget":
+      return <div>Load Budget</div>;
   }
 }

@@ -6,6 +6,10 @@
 // START Enums and Input Objects
 //==============================================================
 
+export interface CreateBudgetFileInput {
+  name: string;
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================

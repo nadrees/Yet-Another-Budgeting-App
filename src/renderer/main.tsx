@@ -31,5 +31,12 @@ ipcRenderer.invoke("get-graphql-uri").then(uri => {
     );
   };
 
-  ReactDOM.render(<Index />, document.getElementById("app"));
+  const render = () =>
+    ReactDOM.render(<Index />, document.getElementById("app"));
+
+  if (module.hot) {
+    module.hot.accept(render);
+  }
+
+  render();
 });

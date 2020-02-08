@@ -1,6 +1,4 @@
 import {
-  Backdrop,
-  CircularProgress,
   Container,
   Divider,
   List,
@@ -16,15 +14,13 @@ import {
 
 import AddIcon from "@material-ui/icons/Add";
 import { BudgetSelectorQuery } from "./__generated__/BudgetSelectorQuery";
+import LoadingOverlay from "./LoadingOverlay";
 import React from "react";
 import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    backdrop: {
-      zIndex: theme.zIndex.drawer + 1
-    },
     container: {
       marginTop: "1rem"
     }
@@ -45,14 +41,9 @@ export default function BudgetSelector(props: Props) {
     }
   `);
 
-  if (loading) {
-    return (
-      <Backdrop open={true} className={styles.backdrop}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    );
-  } else {
-    return (
+  return (
+    <>
+      <LoadingOverlay open={loading} />
       <Container fixed maxWidth="sm" className={styles.container}>
         <Paper elevation={3}>
           <List
@@ -76,6 +67,6 @@ export default function BudgetSelector(props: Props) {
           </List>
         </Paper>
       </Container>
-    );
-  }
+    </>
+  );
 }

@@ -1,13 +1,14 @@
 import { Query, Resolver, Mutation, Arg } from "type-graphql";
 
-import { BudgetFile } from "../object_types/BudgetFile";
+import { BudgetFile } from "../types/BudgetFile";
 import { app } from "electron";
 import fs from "fs";
 import path from "path";
 import util from "util";
 import sanitize from "sanitize-filename";
-import { CreateBudgetFileInput } from "../input_types/CreateBudgetFileInput";
+import { CreateBudgetFileInput } from "../types/CreateBudgetFileInput";
 import ConnectionManager from "../../db/ConnectionManager";
+import { CreateBudgetFileOutput } from "../types/CreateBudgetFileOutput";
 
 const readdir = util.promisify(fs.readdir);
 const exists = util.promisify(fs.exists);
@@ -38,22 +39,27 @@ export class BudgetFileResolver {
       });
   }
 
-  @Mutation(returns => BudgetFile)
+  @Mutation(returns => CreateBudgetFileOutput)
   async createBudget(
     @Arg("args") args: CreateBudgetFileInput
-  ): Promise<BudgetFile> {
+  ): Promise<CreateBudgetFileOutput> {
     const dbFolder = await getDbFolder();
     const fileName = sanitize(args.name) + ".yaba";
     const fullPath = path.join(dbFolder, fileName);
 
     if (await exists(fullPath)) {
-      throw "This name is already taken, or would result in a duplicate budget file. Please chose another name.";
+      return {
+        error:
+          "This name is already taken, or would result in a duplicate budget file. Please chose another name."
+      };
     }
 
     await ConnectionManager.loadBudget(fullPath, args.name);
 
-    const budgetFile = new BudgetFile();
-    budgetFile.path = fullPath;
-    return budgetFile;
+    return {
+      budgetFile: {
+        path: fullPath
+      }
+    };
   }
 }

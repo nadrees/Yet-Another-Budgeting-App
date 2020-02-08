@@ -11,8 +11,13 @@ input CreateBudgetFileInput {
   name: String!
 }
 
+type CreateBudgetFileOutput {
+  budgetFile: BudgetFile
+  error: String
+}
+
 type Mutation {
-  createBudget(args: CreateBudgetFileInput!): BudgetFile!
+  createBudget(args: CreateBudgetFileInput!): CreateBudgetFileOutput!
 }
 
 type Query {

@@ -8,7 +8,6 @@ import { series } from "gulp";
 const graphqlDir = path.join(__dirname, "src", "graphql");
 const emittedSchemaFile = path.join(
   __dirname,
-  "src",
   "__generated__",
   "schema.graphql"
 );
