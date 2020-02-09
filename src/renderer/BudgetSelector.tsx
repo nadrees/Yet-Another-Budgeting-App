@@ -1,9 +1,11 @@
 import {
   Container,
   Divider,
+  IconButton,
   List,
   ListItem,
   ListItemIcon,
+  ListItemSecondaryAction,
   ListItemText,
   ListSubheader,
   Paper,
@@ -14,6 +16,7 @@ import {
 
 import AddIcon from "@material-ui/icons/Add";
 import { BudgetSelectorQuery } from "./__generated__/BudgetSelectorQuery";
+import DeleteIcon from "@material-ui/icons/Delete";
 import LoadingOverlay from "./LoadingOverlay";
 import React from "react";
 import { gql } from "apollo-boost";
@@ -52,6 +55,11 @@ export default function BudgetSelector(props: Props) {
             {data?.budgetFiles?.map(file => (
               <ListItem button key={file.path}>
                 <ListItemText primary={file.path} />
+                <ListItemSecondaryAction>
+                  <IconButton edge="end">
+                    <DeleteIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
               </ListItem>
             ))}
             {data?.budgetFiles?.length ? <Divider /> : null}
