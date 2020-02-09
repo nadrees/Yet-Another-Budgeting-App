@@ -5,8 +5,9 @@ import {
   CardContent,
   CardHeader,
   Container,
-  Paper,
-  TextField
+  TextField,
+  createStyles,
+  makeStyles
 } from "@material-ui/core";
 import {
   NewBudgetMutation,
@@ -19,12 +20,31 @@ import LoadingOverlay from "./LoadingOverlay";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 
+const useStyles = makeStyles(() =>
+  createStyles({
+    cardActions: {
+      marginLeft: "0.5rem",
+      marginBottom: "0.5rem"
+    },
+    cancelButton: {
+      marginLeft: "auto",
+      marginRight: "0.5rem"
+    },
+    container: {
+      marginTop: "1rem"
+    }
+  })
+);
+
 type Props = {
   onBudgetCreated: (path: string) => void;
+  onCancelClicked: () => void;
 };
 
 export default function NewBudget(props: Props): ReactElement {
-  const { onBudgetCreated } = props;
+  const { onBudgetCreated, onCancelClicked } = props;
+
+  const styles = useStyles();
 
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState<string | null>(null);
@@ -52,7 +72,7 @@ export default function NewBudget(props: Props): ReactElement {
   return (
     <>
       <LoadingOverlay open={loading} />
-      <Container fixed maxWidth="sm">
+      <Container fixed maxWidth="sm" className={styles.container}>
         <Card>
           <CardHeader title="Create New Budget" />
           <CardContent>
@@ -71,7 +91,7 @@ export default function NewBudget(props: Props): ReactElement {
               />
             </form>
           </CardContent>
-          <CardActions>
+          <CardActions disableSpacing className={styles.cardActions}>
             <Button
               variant="contained"
               color="primary"
@@ -90,6 +110,13 @@ export default function NewBudget(props: Props): ReactElement {
               }}
             >
               Create
+            </Button>
+            <Button
+              variant="contained"
+              className={styles.cancelButton}
+              onClick={onCancelClicked}
+            >
+              Cancel
             </Button>
           </CardActions>
         </Card>

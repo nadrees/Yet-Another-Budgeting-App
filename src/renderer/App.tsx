@@ -41,6 +41,9 @@ export default function App(): NonNullable<ReactElement> {
           onBudgetCreated={(path: string) =>
             dispatch({ type: "SetView", view: { name: "LoadBudget", path } })
           }
+          onCancelClicked={() =>
+            dispatch({ type: "SetView", view: { name: "SelectBudget" } })
+          }
         />
       );
     case "LoadBudget":

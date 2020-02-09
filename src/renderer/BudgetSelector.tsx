@@ -1,4 +1,7 @@
 import {
+  Card,
+  CardContent,
+  CardHeader,
   Container,
   Divider,
   IconButton,
@@ -8,7 +11,6 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   ListSubheader,
-  Paper,
   Theme,
   createStyles,
   makeStyles
@@ -48,32 +50,33 @@ export default function BudgetSelector(props: Props) {
     <>
       <LoadingOverlay open={loading} />
       <Container fixed maxWidth="sm" className={styles.container}>
-        <Paper elevation={3}>
-          <List
-            subheader={<ListSubheader>Open Or Create Budget</ListSubheader>}
-          >
-            {data?.budgetFiles?.map(file => (
-              <ListItem button key={file.path}>
-                <ListItemText primary={file.path} />
-                <ListItemSecondaryAction>
-                  <IconButton edge="end">
-                    <DeleteIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
+        <Card>
+          <CardHeader title="Open Or Create Budget" />
+          <CardContent>
+            <List subheader={<ListSubheader>Existing Budgets</ListSubheader>}>
+              {data?.budgetFiles?.map(file => (
+                <ListItem button key={file.path}>
+                  <ListItemText primary={file.path} />
+                  <ListItemSecondaryAction>
+                    <IconButton edge="end">
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ))}
+              {data?.budgetFiles?.length ? <Divider /> : null}
+              <ListItem button>
+                <ListItemIcon>
+                  <AddIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="New Budget"
+                  onClick={props.onNewBudgetClicked}
+                />
               </ListItem>
-            ))}
-            {data?.budgetFiles?.length ? <Divider /> : null}
-            <ListItem button>
-              <ListItemIcon>
-                <AddIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="New Budget"
-                onClick={props.onNewBudgetClicked}
-              />
-            </ListItem>
-          </List>
-        </Paper>
+            </List>
+          </CardContent>
+        </Card>
       </Container>
     </>
   );
