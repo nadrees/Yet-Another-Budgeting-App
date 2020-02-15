@@ -65,14 +65,11 @@ export default function BudgetSelector(props: Props) {
                 </ListItem>
               ))}
               {data?.budgetFiles?.length ? <Divider /> : null}
-              <ListItem button>
+              <ListItem button onClick={props.onNewBudgetClicked}>
                 <ListItemIcon>
                   <AddIcon />
                 </ListItemIcon>
-                <ListItemText
-                  primary="New Budget"
-                  onClick={props.onNewBudgetClicked}
-                />
+                <ListItemText primary="New Budget" />
               </ListItem>
             </List>
           </CardContent>
