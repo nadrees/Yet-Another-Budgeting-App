@@ -13,6 +13,7 @@ import { CreateBudgetFileOutput } from "../types/CreateBudgetFileOutput";
 const readdir = util.promisify(fs.readdir);
 const exists = util.promisify(fs.exists);
 const mkdir = util.promisify(fs.mkdir);
+const unlink = util.promisify(fs.unlink);
 
 async function getDbFolder(): Promise<string> {
   const dbFolder = path.join(app.getPath("userData"), "budgets");
@@ -61,5 +62,15 @@ export class BudgetFileResolver {
         path: fullPath
       }
     };
+  }
+
+  @Mutation(returns => [BudgetFile])
+  async deleteBudget(@Arg("path") filePath: string): Promise<BudgetFile[]> {
+    const dbFolder = await getDbFolder();
+    const fullPath = path.join(dbFolder, filePath);
+
+    await unlink(fullPath);
+
+    return await this.budgetFiles();
   }
 }

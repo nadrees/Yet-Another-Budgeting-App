@@ -18,6 +18,7 @@ type CreateBudgetFileOutput {
 
 type Mutation {
   createBudget(args: CreateBudgetFileInput!): CreateBudgetFileOutput!
+  deleteBudget(path: String!): [BudgetFile!]!
 }
 
 type Query {
