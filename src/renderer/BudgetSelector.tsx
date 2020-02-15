@@ -1,4 +1,8 @@
 import {
+  BudgetSelectorQuery,
+  BudgetSelectorQuery_budgetFiles
+} from "./__generated__/BudgetSelectorQuery";
+import {
   Card,
   CardContent,
   CardHeader,
@@ -15,12 +19,12 @@ import {
   createStyles,
   makeStyles
 } from "@material-ui/core";
+import React, { useState } from "react";
 
 import AddIcon from "@material-ui/icons/Add";
-import { BudgetSelectorQuery } from "./__generated__/BudgetSelectorQuery";
+import DeleteBudgetDialog from "./DeleteBudgetDialog";
 import DeleteIcon from "@material-ui/icons/Delete";
 import LoadingOverlay from "./LoadingOverlay";
-import React from "react";
 import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
 
@@ -45,10 +49,24 @@ export default function BudgetSelector(props: Props) {
       }
     }
   `);
+  const [
+    budgetToDelete,
+    setBudgetToDelete
+  ] = useState<BudgetSelectorQuery_budgetFiles | null>(null);
 
   return (
     <>
       <LoadingOverlay open={loading} />
+      {budgetToDelete != null ? (
+        <DeleteBudgetDialog
+          open={true}
+          name={budgetToDelete.path}
+          onCancel={() => setBudgetToDelete(null)}
+          onConfirm={() => {
+            // TODO
+          }}
+        />
+      ) : null}
       <Container fixed maxWidth="sm" className={styles.container}>
         <Card>
           <CardHeader title="Open Or Create Budget" />
@@ -58,7 +76,10 @@ export default function BudgetSelector(props: Props) {
                 <ListItem button key={file.path}>
                   <ListItemText primary={file.path} />
                   <ListItemSecondaryAction>
-                    <IconButton edge="end">
+                    <IconButton
+                      edge="end"
+                      onClick={() => setBudgetToDelete(file)}
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </ListItemSecondaryAction>
