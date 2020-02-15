@@ -1,30 +1,24 @@
 import {
-  BudgetSelectorQuery,
-  BudgetSelectorQuery_budgetFiles
-} from "./__generated__/BudgetSelectorQuery";
-import {
   Card,
   CardContent,
   CardHeader,
   Container,
   Divider,
-  IconButton,
   List,
   ListItem,
   ListItemIcon,
-  ListItemSecondaryAction,
   ListItemText,
   ListSubheader,
   Theme,
   createStyles,
   makeStyles
 } from "@material-ui/core";
-import React, { useState } from "react";
 
 import AddIcon from "@material-ui/icons/Add";
-import DeleteBudgetDialog from "./DeleteBudgetDialog";
-import DeleteIcon from "@material-ui/icons/Delete";
+import BudgetSelectorListItem from "./BudgetSelectorListItem";
+import { BudgetSelectorQuery } from "./__generated__/BudgetSelectorQuery";
 import LoadingOverlay from "./LoadingOverlay";
+import React from "react";
 import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
 
@@ -40,50 +34,32 @@ type Props = {
   onNewBudgetClicked: () => void;
 };
 
+export const BUDGET_SELECTOR_QUERY = gql`
+  query BudgetSelectorQuery {
+    budgetFiles {
+      path
+      ...BudgetSelectorListItem_file
+    }
+  }
+  ${BudgetSelectorListItem.fragments.file}
+`;
+
 export default function BudgetSelector(props: Props) {
   const styles = useStyles();
-  const { loading, data } = useQuery<BudgetSelectorQuery>(gql`
-    query BudgetSelectorQuery {
-      budgetFiles {
-        path
-      }
-    }
-  `);
-  const [
-    budgetToDelete,
-    setBudgetToDelete
-  ] = useState<BudgetSelectorQuery_budgetFiles | null>(null);
+  const { loading, data } = useQuery<BudgetSelectorQuery>(
+    BUDGET_SELECTOR_QUERY
+  );
 
   return (
     <>
       <LoadingOverlay open={loading} />
-      {budgetToDelete != null ? (
-        <DeleteBudgetDialog
-          open={true}
-          name={budgetToDelete.path}
-          onCancel={() => setBudgetToDelete(null)}
-          onConfirm={() => {
-            // TODO
-          }}
-        />
-      ) : null}
       <Container fixed maxWidth="sm" className={styles.container}>
         <Card>
           <CardHeader title="Open Or Create Budget" />
           <CardContent>
             <List subheader={<ListSubheader>Existing Budgets</ListSubheader>}>
               {data?.budgetFiles?.map(file => (
-                <ListItem button key={file.path}>
-                  <ListItemText primary={file.path} />
-                  <ListItemSecondaryAction>
-                    <IconButton
-                      edge="end"
-                      onClick={() => setBudgetToDelete(file)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
+                <BudgetSelectorListItem key={file.path} file={file} />
               ))}
               {data?.budgetFiles?.length ? <Divider /> : null}
               <ListItem button onClick={props.onNewBudgetClicked}>
