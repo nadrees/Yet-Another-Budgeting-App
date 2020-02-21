@@ -14,7 +14,7 @@ const emittedSchemaFile = path.join(
 
 export async function emitSchema(): Promise<void> {
   await buildSchema({
-    resolvers: [path.join(graphqlDir, "**/*.ts")],
+    resolvers: [path.join(graphqlDir, "**!(tests)/*.ts")],
     emitSchemaFile: {
       path: emittedSchemaFile
     }
