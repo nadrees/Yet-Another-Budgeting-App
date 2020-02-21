@@ -99,6 +99,54 @@ describe("BudgetFileResolver", () => {
         expect(budgets[0].id).not.toBeNull();
       });
     });
+
+    describe("when creating a duplicate file", () => {
+      it("should return an error message", async () => {
+        await resolver.createBudget({ name: "test" });
+
+        const result = await resolver.createBudget({ name: "test" });
+        expect(result.error).not.toBeNull();
+      });
+    });
+  });
+
+  describe("deleteBudget", () => {
+    it("should remove the specified budget", async () => {
+      await resolver.createBudget({ name: "test" });
+
+      const result = await resolver.deleteBudget("test.yaba");
+      expect(result.length).toBe(0);
+    });
+
+    it("should not remove other budgets", async () => {
+      await Promise.all([
+        await resolver.createBudget({ name: "test" }),
+        await resolver.createBudget({ name: "test2" })
+      ]);
+
+      const result = await resolver.deleteBudget("test.yaba");
+      expect(result.length).toBe(1);
+      expect(result[0].path).toContain("test2");
+    });
+
+    describe("when the budget does not exist", () => {
+      it("should return normally", async () => {
+        await resolver.createBudget({ name: "test" });
+
+        await resolver.deleteBudget("test.yaba");
+
+        const result = await resolver.deleteBudget("test.yaba");
+        expect(result.length).toBe(0);
+      });
+    });
+
+    it("should close the connection if needed", async () => {
+      const createResult = await resolver.createBudget({ name: "test" });
+      await initConnect(createResult.budgetFile?.path ?? "");
+
+      const result = await resolver.deleteBudget("test.yaba");
+      expect(result.length).toBe(0);
+    });
   });
 });
 

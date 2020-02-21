@@ -71,11 +71,18 @@ export class BudgetFileResolver {
   }
 
   @Mutation(returns => [BudgetFile])
-  async deleteBudget(@Arg("path") filePath: string): Promise<BudgetFile[]> {
+  async deleteBudget(@Arg("name") fileName: string): Promise<BudgetFile[]> {
     const dbFolder = await getDbFolder();
-    const fullPath = path.join(dbFolder, filePath);
+    const fullPath = path.join(dbFolder, fileName);
 
-    await unlink(fullPath);
+    const connection = getConnection();
+    if (connection.isConnected && connection.options.database === fullPath) {
+      await connection.close();
+    }
+
+    if (await exists(fullPath)) {
+      await unlink(fullPath);
+    }
 
     return await this.budgetFiles();
   }
