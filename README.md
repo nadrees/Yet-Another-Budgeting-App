@@ -30,3 +30,8 @@ The graphql schema is output to `__generated__/schema.graphql`, and is used
 by apollo to be able to validate queries, mutations, and subscriptions statically.
 Whenever making a change to types, resolvers on the main thread, or any usage of
 graphql on the renderer, run `gulp` to sync the schema and typescript types.
+
+### Running Tests
+
+Run once: `npm test`
+Run and watch: `npm test -- --watch`

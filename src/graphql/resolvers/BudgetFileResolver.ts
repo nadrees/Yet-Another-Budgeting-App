@@ -55,8 +55,6 @@ export class BudgetFileResolver {
       };
     }
 
-    await ConnectionManager.loadBudget(fullPath, args.name);
-
     return {
       budgetFile: {
         path: fullPath
