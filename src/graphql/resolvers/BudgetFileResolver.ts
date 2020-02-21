@@ -7,15 +7,17 @@ import path from "path";
 import util from "util";
 import sanitize from "sanitize-filename";
 import { CreateBudgetFileInput } from "../types/CreateBudgetFileInput";
-import ConnectionManager from "../../db/ConnectionManager";
 import { CreateBudgetFileOutput } from "../types/CreateBudgetFileOutput";
+import { getRepository, getConnection } from "typeorm";
+import { Budget } from "../../db/entity/Budget";
+import { initConnect } from "../../db/ConnectionUtils";
 
 const readdir = util.promisify(fs.readdir);
 const exists = util.promisify(fs.exists);
 const mkdir = util.promisify(fs.mkdir);
 const unlink = util.promisify(fs.unlink);
 
-async function getDbFolder(): Promise<string> {
+export async function getDbFolder(): Promise<string> {
   const dbFolder = path.join(app.getPath("userData"), "budgets");
   if (!(await exists(dbFolder))) {
     await mkdir(dbFolder, {
@@ -54,6 +56,12 @@ export class BudgetFileResolver {
           "This name is already taken, or would result in a duplicate budget file. Please chose another name."
       };
     }
+
+    await initConnect(fullPath);
+
+    await getRepository(Budget).insert(Budget.new(args.name));
+
+    await getConnection().close();
 
     return {
       budgetFile: {
