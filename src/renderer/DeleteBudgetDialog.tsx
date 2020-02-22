@@ -19,14 +19,15 @@ export default function DeleteBudgetDialog(props: Props) {
   const { open, name, onCancel, onConfirm } = props;
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open} data-testid="dialog">
       <DialogContent>
-        <DialogContentText>
+        <DialogContentText data-testid="dialog-content-text">
           Delete <b>{name}</b>? This action is permanent and cannot be undone.
           All data will be deleted immediately.
         </DialogContentText>
         <DialogActions>
           <Button
+            data-testid="cancel-button"
             color="primary"
             autoFocus
             variant="contained"
@@ -34,7 +35,9 @@ export default function DeleteBudgetDialog(props: Props) {
           >
             Cancel
           </Button>
-          <Button onClick={onConfirm}>OK</Button>
+          <Button data-testid="ok-button" onClick={onConfirm}>
+            OK
+          </Button>
         </DialogActions>
       </DialogContent>
     </Dialog>
